@@ -2,9 +2,75 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>PROG20261: Lab 2 - Hojin You</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script
+            src="https://code.jquery.com/jquery-3.6.4.min.js"
+            integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8="
+            crossorigin="anonymous"></script>
 </head>
 <body>
+<div class="container mt-4">
+    <h1>
+        Event Registration Form
+    </h1>
+    <form id="registration-form">
+        <div class="form-group row">
+            <label for="invitation-id" class="col-sm-2 col-form-label">Invitation ID:</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="invitation-id" name="invitation_id" placeholder="Enter your invitation ID">
+
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="name" class="col-sm-2 col-form-label">Name:</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="name" name="name" placeholder="Firstname Lastname">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="company" class="col-sm-2 col-form-label">Company:</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="company" name="company" placeholder="Company name">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2">Type:</label>
+            <div class="col-sm-10">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="type" id="sole-proprietorship" value="sole-proprietorship" checked>
+                    <label class="form-check-label" for="sole-proprietorship">Sole proprietorship</label>
+                </div>
+                <br>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="type" id="partnership" value="partnership">
+                    <label class="form-check-label" for="partnership">Partnership</label>
+                </div>
+                <br>
+
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="type" id="corporation" value="corporation">
+                    <label class="form-check-label" for="corporation">Corporation</label>
+                </div>
+                <br>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="type" id="other" value="other">
+                    <label class="form-check-label" for="other">Other</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert" id="danger-alert" style="display:none;"></div>
+
+        <button type="submit" class="btn btn-primary" id="register-btn">Register</button>
+        <button type="button" class="btn btn-secondary" id="check-registration">Check Registration</button>
+        <button type="button" class="btn btn-warning" id="delete-registration">Delete Registration</button>
+    </form>
+</div>
+
+<script>
+
+</script>
 
 </body>
 </html>
