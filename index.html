@@ -21,7 +21,6 @@
             <div class="col-sm-10">
                 <input type="text" class="form-control" id="invitation-id" name="invitation_id"
                        placeholder="Enter your invitation ID">
-
             </div>
         </div>
         <div class="form-group row">
@@ -139,13 +138,13 @@
                 // Display the error message in the alert block
                 $('.alert')
                     .removeClass('alert-success')
-                    .addClass('alert-danger')
+                    .addClass('alert-warning')
                     .html(errorMessages + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>')
                     .show();
             } else {
                 // Display a success alert if all inputs are valid
                 $('.alert')
-                    .removeClass('alert-danger')
+                    .removeClass('alert-warning')
                     .addClass('alert-success')
                     .html('Registration Info Saved' + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>')
                     .show();
@@ -161,7 +160,7 @@
             var errors = [];
 
             // Check if the invitation ID field is empty
-            if (invitationId == '') {
+            if (!invitationId) {
                 // Add error message to array
                 errors.push('Invitation ID cannot be empty');
             } else {
@@ -320,6 +319,11 @@
                 };
             }
         });
+
+        $(document).on("click", ".alert .close", function() {
+            $(this).closest(".alert").hide();
+        });
+
     });
 
     function addRegistration(invitationId, name, company, type) {
