@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>PROG20261: Lab 2 - Hojin You</title>
+    <title>Event Registration App</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script
@@ -97,19 +97,14 @@
 
     $(document).ready(function () {
         $("#registration-form").submit(function (event) {
-            // prevent the form from submitting
             event.preventDefault();
 
-            // get the values of the input fields
             var invitationId = $("#invitation-id").val();
             var name = $("#name").val();
             var company = $("#company").val();
             var type = $("input[name='type']:checked").val();
-            //if any of the fields are empty, show an alert
-            // Create an empty array to store error messages
             var errors = [];
 
-            // Check if the input fields are empty and add error messages to the errors array
             if (!invitationId) {
                 errors.push('Invitation ID cannot be empty');
             } else if (!(/^\d+$/.test(invitationId))) {
@@ -125,24 +120,19 @@
                 errors.push('Please select a type');
             }
 
-            // If there are any errors, display them in the alert block
             if (errors.length > 0) {
-                // Create an empty string to accumulate error messages
                 var errorMessages = '';
 
-                // Loop through the array of errors and append each error message to the string
                 for (var i = 0; i < errors.length; i++) {
                     errorMessages += errors[i] + '<br>';
                 }
 
-                // Display the error message in the alert block
                 $('.alert')
                     .removeClass('alert-success')
                     .addClass('alert-warning')
                     .html(errorMessages + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>')
                     .show();
             } else {
-                // Display a success alert if all inputs are valid
                 $('.alert')
                     .removeClass('alert-warning')
                     .addClass('alert-success')
@@ -154,29 +144,20 @@
 
         $("#check-btn").click(function (event) {
             event.preventDefault();
-            // get the values of the input fields
             var invitationId = $("#invitation-id").val();
-            // Create an empty array to store error messages
             var errors = [];
 
-            // Check if the invitation ID field is empty
             if (!invitationId) {
-                // Add error message to array
                 errors.push('Invitation ID cannot be empty');
             } else {
-                // Check if the invitation ID field is a valid integer
                 if (!(/^\d+$/.test(invitationId))) {
-                    // Add error message to array
                     errors.push('Invitation ID must be a valid integer');
                 }
             }
 
-            // If there are any errors, display them in the alert block
             if (errors.length > 0) {
-                // Create an empty string to accumulate error messages
                 var errorMessages = '';
 
-                // Loop through the array of errors and append each error message to the string
                 for (var i = 0; i < errors.length; i++) {
                     errorMessages += errors[i] + '<br>';
                 }
@@ -186,112 +167,78 @@
                     .html(errorMessages + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>')
                     .show();
             } else {
-                // Display a success alert if the invitation ID is a valid integer
-                // Invitation ID is an integer, check if it matches any key in the database
-                // Open the indexedDB database
                 var request = window.indexedDB.open('registrationDB', 1);
-
-                // Handle database errors
                 request.onerror = function (event) {
-                    // Display an error message in the alert
                     $('.alert')
                         .removeClass('alert-success')
                         .addClass('alert-warning alert-dismissible fade show')
                         .html('Database error: ' + event.target.errorCode + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>')
                         .show();
-
-                    // $('.alert').removeClass('alert-success').addClass('alert-warning').html('Database error: ' + event.target.errorCode).show();
                 };
 
-                // Handle database upgrades
                 request.onupgradeneeded = function (event) {
-                    // Get a reference to the database
                     var db = event.target.result;
 
-                    // Create an object store for the registrations
                     var objectStore = db.createObjectStore('registration', {keyPath: 'invitationId'});
 
-                    // Create an index on the invitation ID property
                     objectStore.createIndex('invitationId', 'invitationId', {unique: true});
                 };
 
-                // Handle database opening success
                 request.onsuccess = function (event) {
-                    // Get a reference to the database
                     var db = event.target.result;
 
-                    // Create a transaction and get the registrations object store
                     var transaction = db.transaction(['registration'], 'readonly');
                     var objectStore = transaction.objectStore('registration');
 
-                    // Get the registration with the matching invitation ID
                     var request = objectStore.get(invitationId);
                     request.onerror = function (event) {
-                        // Display an error message in the alert
                         $('.alert')
                             .removeClass('alert-success')
                             .addClass('alert-warning alert-dismissible fade show')
                             .html('Database error: ' + event.target.errorCode + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>')
                             .show();
 
-                        // $('.alert').removeClass('alert-success').addClass('alert-warning').html('Database error: ' + event.target.errorCode).show();
                     };
                     request.onsuccess = function (event) {
                         var registration = event.target.result;
                         if (registration) {
-                            // Display a success message in the alert
                             getRegistration(invitationId);
                             $('.alert')
                                 .removeClass('alert-warning')
                                 .addClass('alert-success alert-dismissible fade show')
                                 .html('Registration Info Found! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>')
                                 .show();
-                            // $('.alert').removeClass('alert-warning').addClass('alert-success').html('Registration Info Found!').show();
                         } else {
-                            // Display an error message in the alert
                             $('.alert')
                                 .removeClass('alert-success')
                                 .addClass('alert-warning alert-dismissible fade show')
                                 .html('Registration Info Not Found. Please enter a valid invitation ID. <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>')
                                 .show();
 
-                            // $('.alert').removeClass('alert-success').addClass('alert-warning').html('Registration Info Not Found. Please enter a valid invitation ID.').show();
                         }
                     };
                 };
             }
-
         });
 
         $("#delete-btn").click(function (event) {
             event.preventDefault();
-            // get the values of the input fields
             var invitationId = $("#invitation-id").val();
-            // check if the invitation ID field is empty
             if (!invitationId) {
-                // display an error message in the alert
                 $(".alert")
                     .removeClass("alert-success")
                     .addClass("alert-warning alert-dismissible fade show")
                     .html("Invitation ID cannot be empty. <button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>")
                     .show();
 
-                // $(".alert").removeClass("alert-success").addClass("alert-warning").text("Invitation ID cannot be empty.").show();
             } else if (!(/^\d+$/.test(invitationId))) {
-                // display an error message in the alert
                 $(".alert")
                     .removeClass("alert-success")
                     .addClass("alert-warning alert-dismissible fade show")
                     .html("Invitation ID must be a valid integer. <button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>")
                     .show();
 
-                // $(".alert").removeClass("alert-success").addClass("alert-warning").text("Invitation ID must be a valid integer.").show();
             } else {
-                // Invitation ID is an integer, check if it matches any key in the database
-                // if it matches, delete the registration
-                // else, display an error message in the alert
-
-                // Open the indexedDB database
                 var transaction = db.transaction(['registration'], 'readonly');
                 var objectStore = transaction.objectStore('registration');
                 var request = objectStore.get(invitationId);
@@ -299,22 +246,18 @@
                 request.onsuccess = function (event) {
                     var registration = event.target.result;
                     if (registration) {
-                        // Display a success message in the alert
                         deleteRegistration(invitationId);
                         $('.alert')
                             .removeClass('alert-warning')
                             .addClass('alert-success alert-dismissible fade show')
                             .html('Registration Info Deleted! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>')
                             .show();
-                        // $('.alert').removeClass('alert-warning').addClass('alert-success').html('Registration Info Deleted!').show();
                     } else {
-                        // Display an error message in the alert
                         $('.alert')
                             .removeClass('alert-success')
                             .addClass('alert-warning alert-dismissible fade show')
                             .html('Registration Info Not Found. Please enter a valid invitation ID. <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>')
                             .show();
-                        // $('.alert').removeClass('alert-success').addClass('alert-warning').html('Registration Info Not Found. Please enter a valid invitation ID.').show();
                     }
                 };
             }
@@ -323,7 +266,6 @@
         $(document).on("click", ".alert .close", function() {
             $(this).closest(".alert").hide();
         });
-
     });
 
     function addRegistration(invitationId, name, company, type) {
@@ -335,7 +277,7 @@
             company: company,
             type: type
         });
-        request.onsuccess = function (event) {
+        request.onsuccess = function () {
             $(".alert")
                 .removeClass("alert-warning")
                 .addClass("alert-success")
@@ -357,7 +299,7 @@
         var transaction = db.transaction(['registration'], 'readonly');
         var objectStore = transaction.objectStore('registration');
         var request = objectStore.get(invitationId);
-        request.onsuccess = function (event) {
+        request.onsuccess = function () {
             if (request.result) {
                 console.log('Registration found:', request.result);
                 $(".alert")
@@ -393,14 +335,13 @@
         var transaction = db.transaction(['registration'], 'readwrite');
         var objectStore = transaction.objectStore('registration');
         var request = objectStore.delete(invitationId);
-        request.onsuccess = function (event) {
+        request.onsuccess = function () {
             console.log('Registration deleted successfully');
             $(".alert")
                 .removeClass("alert-warning")
                 .addClass("alert-success")
                 .html('Registration Info Deleted. <button type="button" class="close" data-dismiss="alert">&times;</button>')
                 .show();
-            // $(".alert").removeClass("alert-warning").addClass("alert-success").text("Registration Info Deleted.").show();
         };
         request.onerror = function (event) {
             console.log('Error deleting registration:', event.target.errorCode);
